@@ -1,0 +1,10 @@
+[
+    {
+        "name": "Learn JavaScript",
+        "due": "2020-10-10"
+    },
+    {
+        "name": "Take Kuglof for a walk",
+        "due": "tomorrow"
+    }
+]

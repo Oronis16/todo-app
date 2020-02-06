@@ -4,7 +4,10 @@
   "description": "",
   "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "precss-compile": "rm -rf src/styles.css",
+    "css-compile": "./node_modules/node-sass/bin/node-sass --output src src/styles.scss",
+    "css-watch": "npm run css-compile && npm run css-compile -- -w"
   },
   "repository": {
     "type": "git",
@@ -15,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/Oronis16/todo-app/issues"
   },
-  "homepage": "https://github.com/Oronis16/todo-app#readme"
+  "homepage": "https://github.com/Oronis16/todo-app#readme",
+  "devDependencies": {
+    "node-sass": "^4.13.1"
+  }
 }
