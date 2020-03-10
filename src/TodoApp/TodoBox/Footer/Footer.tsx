@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useContext } from "react";
 import styled from "styled-components";
+import { TodoContext } from "../../TodoContext/TodoContext";
 
 const Btn = styled.button`
   padding: 10px 15px;
@@ -30,15 +31,14 @@ const Text = styled.input`
 `;
 
 export const Footer = (props) => {
+  const inputEl = useRef(null);
 
-  const [inpVal, setInpVal] = useState('');
-  const handleTodoInputChange = e => {
-    setInpVal(e.target.value);
-    console.log('inpVal', inpVal);
-  };
-
+  const dispatch = useContext(TodoContext);
   const handleClick = e => {
-    props.onInputChanged(inpVal);
+    dispatch({
+      type: 'addtodo',
+      payload: inputEl.current.value
+    });
   };
 
   return (
@@ -46,7 +46,7 @@ export const Footer = (props) => {
       <Box>
         <p>Write here your daily activity:</p>
         <Wrapper>
-          <Text onChange={handleTodoInputChange} type="text" />
+          <Text ref={inputEl} type="text" />
           <Btn onClick={handleClick}>Ok!</Btn>
         </Wrapper>
       </Box>
