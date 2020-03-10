@@ -30,15 +30,21 @@ const Text = styled.input`
   font-size: 18px;
 `;
 
-export const Footer = (props) => {
+export const Controls = (props) => {
   const inputEl = useRef(null);
 
   const dispatch = useContext(TodoContext);
   const handleClick = e => {
+
+    if (inputEl.current.value === '') {
+      return alert('Please, write something!')
+    }
+
     dispatch({
       type: 'addtodo',
       payload: inputEl.current.value
     });
+    inputEl.current.value = '';
   };
 
   return (

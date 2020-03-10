@@ -1,12 +1,11 @@
 import React, { useReducer } from 'react';
 import styled from 'styled-components';
 import { Header } from './Header/Header';
-import { Footer } from './Footer/Footer';
-import { Output } from './Footer/Output/Output'
-import { TodoContext } from '../../TodoApp/TodoContext/TodoContext'
+import { Controls } from './Controls/Controls';
+import { Output } from './Output/Output';
+import { TodoContext } from '../../TodoApp/TodoContext/TodoContext';
 import { v4 as uuid } from 'uuid';
-
-const initialState = []
+import { Completed } from './Completed/Completed';
 
 const Block = styled.div`
   align-items: center;
@@ -17,37 +16,60 @@ const Block = styled.div`
   width: 400px;
   flex-direction: column;
   border-radius: 20px;
+  -webkit-box-shadow: 11px 13px 46px -7px rgba(0,0,0,0.75);
+  -moz-box-shadow: 11px 13px 46px -7px rgba(0,0,0,0.75);
+  box-shadow: 11px 13px 46px -7px rgba(0,0,0,0.75);
 `
 
-export const todoReducer = (todos, action) => {
+export const todoReducer = (state, action) => {
   switch (action.type) {
+
     case 'addtodo':
       const newItem = {
         id: uuid(),
         todoName: action.payload
       }
-      return [...todos, newItem];
-    case 'remove':
+      return { ...state, todos: [...state.todos, newItem] };
+
+    case 'remove': {
       const todo = action.payload;
       const id = todo.id;
-      const index = todos.findIndex(todo => todo.id === id);
+      const index = state.todos.findIndex(todo => todo.id === id);
       if (index === -1) return;
-      todos.splice(index, 1);
-      return [...todos]
+      state.todos.splice(index, 1);
+      return { ...state, todos: [...state.todos] }
+    }
+
+    case 'setcompleted': {
+      const todo = action.payload;
+      const id = todo.id;
+      const index = state.todos.findIndex(todo => todo.id === id);
+      if (index === -1) return;
+      const todoToComplete = { ...state.todos[index] };
+      state.todos.splice(index, 1);
+      return { todos: [...state.todos], completed: [...state.completed, todoToComplete] }
+    }
+
     default:
       throw new Error();
   }
 }
 
+const initialState = {
+  todos: [],
+  completed: []
+}
+
 export const TodoBox = () => {
-  const [todos, dispatch] = useReducer(todoReducer, initialState);
+  const [state, dispatch] = useReducer(todoReducer, initialState);
 
   return(
     <TodoContext.Provider value={dispatch}>
       <Block>
           <Header />
-          <Footer />
-          <Output todos={todos} />
+          <Controls />
+          <Output todos={state.todos} />
+          <Completed todos={state.completed}/>
       </Block>
     </TodoContext.Provider>
   );
