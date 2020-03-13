@@ -16,6 +16,7 @@ const Box = styled.div`
   background-color: white;
   margin-bottom: 20px;
   color: coral;
+  font-family: 'Allan';
 
   ${Btn} {
     background-color: coral;

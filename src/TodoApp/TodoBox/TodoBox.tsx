@@ -50,6 +50,25 @@ export const todoReducer = (state, action) => {
       return { todos: [...state.todos], completed: [...state.completed, todoToComplete] }
     }
 
+    case 'uncomplete': {
+      const todo = action.payload;
+      const id = todo.id;
+      const index = state.completed.findIndex(todo => todo.id === id);
+      if (index === -1) return;
+      const todoToUncompleted = { ...state.completed[index] };
+      state.completed.splice(index, 1);
+      return { completed: [...state.completed], todos: [...state.todos, todoToUncompleted]}
+    }
+
+    case 'removecompleted': {
+      const todo = action.payload;
+      const id = todo.id;
+      const index = state.completed.findIndex(todo => todo.id === id);
+      if (index === -1) return;
+      state.completed.splice(index, 1);
+      return { ...state, completed: [...state.completed]};
+    }
+
     default:
       throw new Error();
   }

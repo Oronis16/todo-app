@@ -26,6 +26,7 @@ const Check = styled.input`
 
 const Wrapper = styled.div`
   width: 100%;
+  font-family: 'Allan';
 `
 
 export const Output = (props) => {
