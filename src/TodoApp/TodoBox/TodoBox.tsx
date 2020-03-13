@@ -6,6 +6,7 @@ import { Output } from './Output/Output';
 import { TodoContext } from '../../TodoApp/TodoContext/TodoContext';
 import { v4 as uuid } from 'uuid';
 import { Completed } from './Completed/Completed';
+import { useStorage, addItem, removeItem, TODOS_KEY, COMPLETED_KEY } from '../LocalStorage';
 
 const Block = styled.div`
   align-items: center;
@@ -29,6 +30,7 @@ export const todoReducer = (state, action) => {
         id: uuid(),
         todoName: action.payload
       }
+      addItem(TODOS_KEY, newItem);
       return { ...state, todos: [...state.todos, newItem] };
 
     case 'remove': {
@@ -37,6 +39,7 @@ export const todoReducer = (state, action) => {
       const index = state.todos.findIndex(todo => todo.id === id);
       if (index === -1) return;
       state.todos.splice(index, 1);
+      removeItem(TODOS_KEY, todo);
       return { ...state, todos: [...state.todos] }
     }
 
@@ -47,6 +50,8 @@ export const todoReducer = (state, action) => {
       if (index === -1) return;
       const todoToComplete = { ...state.todos[index] };
       state.todos.splice(index, 1);
+      removeItem(TODOS_KEY, todoToComplete);
+      addItem(COMPLETED_KEY, todoToComplete);
       return { todos: [...state.todos], completed: [...state.completed, todoToComplete] }
     }
 
@@ -57,6 +62,8 @@ export const todoReducer = (state, action) => {
       if (index === -1) return;
       const todoToUncompleted = { ...state.completed[index] };
       state.completed.splice(index, 1);
+      removeItem(COMPLETED_KEY, todoToUncompleted);
+      addItem(TODOS_KEY, todoToUncompleted);
       return { completed: [...state.completed], todos: [...state.todos, todoToUncompleted]}
     }
 
@@ -66,6 +73,7 @@ export const todoReducer = (state, action) => {
       const index = state.completed.findIndex(todo => todo.id === id);
       if (index === -1) return;
       state.completed.splice(index, 1);
+      removeItem(COMPLETED_KEY, todo);
       return { ...state, completed: [...state.completed]};
     }
 
@@ -80,6 +88,11 @@ const initialState = {
 }
 
 export const TodoBox = () => {
+  const { todos, completed } = useStorage();
+
+  if (todos && todos.length > 0) initialState.todos = todos;
+  if (completed && completed.length > 0) initialState.completed = completed;
+
   const [state, dispatch] = useReducer(todoReducer, initialState);
 
   return(
